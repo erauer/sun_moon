@@ -34,7 +34,7 @@ defmodule SunMoon.Application do
           id: "moon",
           start:
             {SchedEx, :run_every,
-             [&SunMoon.Routine.moon/0, "50 6 * * *", [timezone: "America/Los_Angeles"]]}
+             [&SunMoon.Routine.moon/0, "40 6 * * *", [timezone: "America/Los_Angeles"]]}
         }
       )
 
@@ -45,7 +45,7 @@ defmodule SunMoon.Application do
           id: "sun",
           start:
             {SchedEx, :run_every,
-             [&SunMoon.Routine.sun/0, "0 7 * * *", [timezone: "America/Los_Angeles"]]}
+             [&SunMoon.Routine.sun/0, "45 6 * * *", [timezone: "America/Los_Angeles"]]}
         }
       )
 
@@ -56,7 +56,7 @@ defmodule SunMoon.Application do
           id: "off",
           start:
             {SchedEx, :run_every,
-             [&SunMoon.Routine.off/0, "49 * * * *", [timezone: "America/Los_Angeles"]]}
+             [&SunMoon.Routine.off/0, "30 * * * *", [timezone: "America/Los_Angeles"]]}
         }
       )
   end
