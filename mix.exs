@@ -3,16 +3,20 @@ defmodule SunMoon.MixProject do
 
   @all_targets [:rpi, :rpi0, :rpi2, :rpi3, :rpi3a]
 
+  @app :sun_moon
+
   def project do
     [
-      app: :sun_moon,
+      app: @app,
       version: "0.1.0",
       elixir: "~> 1.8",
-      archives: [nerves_bootstrap: "~> 1.4"],
+      archives: [nerves_bootstrap: "~> 1.6"],
       start_permanent: Mix.env() == :prod,
       build_embedded: Mix.target() != :host,
       aliases: [loadconfig: [&bootstrap/1]],
-      deps: deps()
+      deps: deps(),
+      releases: [{@app, release()}],
+      preferred_cli_target: [run: :host, test: :host]
     ]
   end
 
@@ -39,21 +43,31 @@ defmodule SunMoon.MixProject do
       {:shoehorn, "~> 0.4"},
       {:ring_logger, "~> 0.6"},
       {:toolshed, "~> 0.2"},
-      {:sched_ex, "~> 1.0"},
-{:tzdata, "~> 0.5.19"},
+      {:sched_ex, "~> 1.1"},
+      {:tzdata, "~> 1.0"},
 
       # Dependencies for all targets except :host
       {:nerves_time, "~> 0.2.0", targets: @all_targets},
-      {:nerves_init_gadget, "~> 0.6.0", targets: @all_targets},
+      {:nerves_init_gadget, "~> 0.7.0", targets: @all_targets},
       {:nerves_runtime, "~> 0.6", targets: @all_targets},
       {:blinkchain, "~> 1.0.0-rc0", targets: @all_targets},
 
       # Dependencies for specific targets
-      {:nerves_system_rpi, "~> 1.6", runtime: false, targets: :rpi},
-      {:nerves_system_rpi0, "~> 1.6", runtime: false, targets: :rpi0},
-      {:nerves_system_rpi2, "~> 1.6", runtime: false, targets: :rpi2},
-      {:nerves_system_rpi3, "~> 1.6", runtime: false, targets: :rpi3},
-      {:nerves_system_rpi3a, "~> 1.6", runtime: false, targets: :rpi3a}
+      {:nerves_system_rpi, "~> 1.8", runtime: false, targets: :rpi},
+      {:nerves_system_rpi0, "~> 1.8", runtime: false, targets: :rpi0},
+      {:nerves_system_rpi2, "~> 1.8", runtime: false, targets: :rpi2},
+      {:nerves_system_rpi3, "~> 1.8", runtime: false, targets: :rpi3},
+      {:nerves_system_rpi3a, "~> 1.8", runtime: false, targets: :rpi3a}
+    ]
+  end
+
+  def release do
+    [
+      overwrite: true,
+      cookie: "#{@app}_cookie",
+      include_erts: &Nerves.Release.erts/0,
+      steps: [&Nerves.Release.init/1, :assemble],
+      strip_beams: Mix.env() == :prod
     ]
   end
 end
