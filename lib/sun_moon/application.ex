@@ -31,10 +31,31 @@ defmodule SunMoon.Application do
       DynamicSupervisor.start_child(
         SunMoon.RoutineSupervisor,
         %{
-          id: "moon",
+          id: "moon1",
           start:
             {SchedEx, :run_every,
-             [&SunMoon.Routine.moon/0, "40 6 * * *", [timezone: "America/Los_Angeles"]]}
+             [&SunMoon.Routine.moon/0, "40 6 * * 1-5", [timezone: "America/Los_Angeles"]]}
+        }
+      )
+
+    DynamicSupervisor.start_child(
+      SunMoon.RoutineSupervisor,
+      %{
+        id: "moon2",
+        start:
+          {SchedEx, :run_every,
+           [&SunMoon.Routine.moon/0, "40 7 * * 6,0", [timezone: "America/Los_Angeles"]]}
+      }
+    )
+
+    {:ok, _pid} =
+      DynamicSupervisor.start_child(
+        SunMoon.RoutineSupervisor,
+        %{
+          id: "sun1",
+          start:
+            {SchedEx, :run_every,
+             [&SunMoon.Routine.sun/0, "45 6 * * 1-5", [timezone: "America/Los_Angeles"]]}
         }
       )
 
@@ -42,10 +63,10 @@ defmodule SunMoon.Application do
       DynamicSupervisor.start_child(
         SunMoon.RoutineSupervisor,
         %{
-          id: "sun",
+          id: "sun2",
           start:
             {SchedEx, :run_every,
-             [&SunMoon.Routine.sun/0, "45 6 * * *", [timezone: "America/Los_Angeles"]]}
+             [&SunMoon.Routine.sun/0, "45 7 * * 6,0", [timezone: "America/Los_Angeles"]]}
         }
       )
 
